@@ -1,7 +1,8 @@
 import supertest from "supertest";
 import { web } from "../src/application/web.js";
 import { logger } from "../src/application/logging.js";
-import { createTestUser, removeTestUser } from "./test-util.js";
+import { createTestUser, getTestUser, removeTestUser } from "./test-util.js";
+import bcrypt from "bcrypt";
 
 describe('POST /api/users', function () {
     afterEach(async() => {
@@ -150,5 +151,70 @@ describe('GET /api/users/current', function () {
         logger.info(result.body);
         expect(result.status).toBe(401);
         expect(result.body.errors).toBeDefined();
+    });
+});
+
+describe('PATCH /api/users/current', function () {
+    beforeEach(async () => {
+        await createTestUser();
+    });
+    
+    afterEach(async () => {
+        await removeTestUser();
+    });
+
+    it('should can update user', async () => {
+        let result = await supertest(web)
+            .patch('/api/users/current')
+            .set("Authorization", "test")
+            .send({
+                name: "Koko",
+                password: "kosonglagi"
+            });
+        logger.info(result.body);
+        expect(result.status).toBe(200);
+        expect(result.body.data.username).toBe("test");
+        expect(result.body.data.name).toBe("Koko");
+
+        const user = await getTestUser();
+        expect(await bcrypt.compare("kosonglagi", user.password)).toBe(true);
+    });
+    
+    it('should can update user name', async () => {
+        let result = await supertest(web)
+            .patch('/api/users/current')
+            .set("Authorization", "test")
+            .send({
+                name: "Koko",
+            });
+        logger.info(result.body);
+        expect(result.status).toBe(200);
+        expect(result.body.data.username).toBe("test");
+        expect(result.body.data.name).toBe("Koko");
+    });
+
+    it('should can update user password', async () => {
+        let result = await supertest(web)
+            .patch('/api/users/current')
+            .set("Authorization", "test")
+            .send({
+                password: "kosonglagi"
+            });
+        logger.info(result.body);
+        expect(result.status).toBe(200);
+        expect(result.body.data.username).toBe("test");
+        expect(result.body.data.name).toBe("test");
+
+        const user = await getTestUser();
+        expect(await bcrypt.compare("kosonglagi", user.password)).toBe(true);
+    });
+    
+    it('should reject if request is not valid', async () => {
+        let result = await supertest(web)
+            .patch('/api/users/current')
+            .set("Authorization", "salah")
+            .send({});
+        logger.info(result.body);
+        expect(result.status).toBe(401);
     });
 });
