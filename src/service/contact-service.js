@@ -1,5 +1,5 @@
 import { prismaClient } from "../application/database";
-import { createContactValidation } from "../validation/contact-validation"
+import { createContactValidation, getContactValidation } from "../validation/contact-validation"
 import { validate } from "../validation/validation"
 
 const create = async (user, request) => {
@@ -18,6 +18,12 @@ const create = async (user, request) => {
     });
 }
 
+const get = async (user, contactId) => {
+    contactId = validate(getContactValidation, contactId);
+    contact.username = user.username;
+}
+
 export default {
-    create
+    create,
+    get
 }
