@@ -1,16 +1,16 @@
 import supertest from "supertest";
 import { web } from "../src/application/web.js";
-import { createTestUser, removeTestUser, removeAllTestContacts } from "./test-util.js";
+import { createTestUser, removeTestUser, removeAllTestContacts, createTestContact } from "./test-util.js";
 
 describe('POST /api/contacts', function () {
     beforeEach(async () => {
         await createTestUser();
-    })
+    });
     
     afterEach(async () => {
         await removeAllTestContacts();
         await removeTestUser();
-    })
+    });
 
     it ('should can create new contact', async () => {
         const result = await supertest(web)
@@ -44,4 +44,22 @@ describe('POST /api/contacts', function () {
         expect(result.body.errors).toBeDefined();
     });
     
+});
+
+describe('GET /api/contacts/:contactId', function () {
+    beforeEach(async () => {
+        await createTestUser();
+        await createTestContact();
+    });
+    
+    afterEach(async () => {
+        await removeAllTestContacts();
+        await removeTestUser();
+    });
+
+    it ('should can get contact', async () => {
+        const result = await supertest(web)
+            .post('/api/contacts/');
+            
+    });
 });
