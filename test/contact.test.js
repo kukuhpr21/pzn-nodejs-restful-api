@@ -1,6 +1,7 @@
 import supertest from "supertest";
 import { web } from "../src/application/web.js";
-import { createTestUser, removeTestUser, removeAllTestContacts, createTestContact } from "./test-util.js";
+import { createTestUser, removeTestUser, removeAllTestContacts, createTestContact, getTestContact } from "./test-util.js";
+import { logger } from "../src/application/logging.js";
 
 describe('POST /api/contacts', function () {
     beforeEach(async () => {
@@ -58,8 +59,17 @@ describe('GET /api/contacts/:contactId', function () {
     });
 
     it ('should can get contact', async () => {
+        const testContact = await getTestContact();
         const result = await supertest(web)
-            .post('/api/contacts/');
+            .get('/api/contacts/'+ testContact.id)
+            .set("Authorization", "test");
+            
+        expect(result.status).toBe(200);
+        expect(result.body.data.id).toBe(testContact.id);
+        expect(result.body.data.first_name).toBe(testContact.first_name);
+        expect(result.body.data.last_name).toBe(testContact.last_name);
+        expect(result.body.data.email).toBe(testContact.email);
+        expect(result.body.data.phone).toBe(testContact.phone);
             
     });
 });
