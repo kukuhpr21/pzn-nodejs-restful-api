@@ -63,7 +63,7 @@ const update = async (user, request) => {
             first_name: contact.first_name,
             last_name: contact.last_name,
             email: contact.email,
-            phome: contact.phone
+            phone: contact.phone
         },
         select: {
             id: true,

@@ -83,3 +83,65 @@ describe('GET /api/contacts/:contactId', function () {
             
     });
 });
+
+describe('PUT /api/contacts/:contactId', function () {
+    beforeEach(async () => {
+        await createTestUser();
+        await createTestContact();
+    });
+    
+    afterEach(async () => {
+        await removeAllTestContacts();
+        await removeTestUser();
+    });
+
+    it ('should can update existing contact', async () => {
+        const testContact = await getTestContact();
+        const result = await supertest(web)
+            .put('/api/contacts/'+ testContact.id)
+            .set("Authorization", "test")
+            .send({
+                first_name: "Kukuh",
+                last_name: "Ganteng",
+                email: "kukuh@gmail.com",
+                phone: "08111111111"
+            });
+
+        expect(result.status).toBe(200);
+        expect(result.body.data.id).toBe(testContact.id);
+        expect(result.body.data.first_name).toBe("Kukuh");
+        expect(result.body.data.last_name).toBe("Ganteng");
+        expect(result.body.data.email).toBe("kukuh@gmail.com");
+        expect(result.body.data.phone).toBe("08111111111");        
+    });
+    
+    it ('should reject if request is invalid', async () => {
+        const testContact = await getTestContact();
+        const result = await supertest(web)
+            .put('/api/contacts/'+ testContact.id)
+            .set("Authorization", "test")
+            .send({
+                first_name: "",
+                last_name: "",
+                email: "kukuh",
+                phone: ""
+            });
+
+        expect(result.status).toBe(400);
+    });
+    
+    it ('should reject if contact is not found', async () => {
+        const testContact = await getTestContact();
+        const result = await supertest(web)
+            .put('/api/contacts/'+ (testContact.id + 1))
+            .set("Authorization", "test")
+            .send({
+                first_name: "Kukuh",
+                last_name: "Ganteng",
+                email: "kukuh@gmail.com",
+                phone: "08111111111"
+            });
+
+        expect(result.status).toBe(404);
+    });
+});
