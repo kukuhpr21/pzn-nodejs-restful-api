@@ -1,7 +1,6 @@
 import supertest from "supertest";
 import { web } from "../src/application/web.js";
 import { createTestUser, removeTestUser, removeAllTestContacts, createTestContact, getTestContact, createManyTestContacts } from "./test-util.js";
-import { logger } from "../src/application/logging.js";
 
 describe('POST /api/contacts', function () {
     beforeEach(async () => {
@@ -170,7 +169,7 @@ describe('DELETE /api/contacts/:contactId', function () {
         expect(testContact).toBeNull();
     });
     
-    it ('should reject if contact is not found', async () => {
+    it ('should can create new address', async () => {
         let testContact = await getTestContact();
         const result = await supertest(web)
             .delete('/api/contacts/'+ (testContact.id + 1))
