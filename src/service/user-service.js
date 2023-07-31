@@ -1,5 +1,4 @@
 import { prismaClient } from "../application/database.js";
-import { logger } from "../application/logging.js";
 import { ResponseError } from "../error/response-error.js";
 import { getUserValidation, loginUserValidation, registerUserValidation, updateUserValidation } from "../validation/user-validation.js"
 import { validate } from "../validation/validation.js"
