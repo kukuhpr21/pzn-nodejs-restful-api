@@ -120,3 +120,91 @@ describe('GET /api/contacts/:contactId/addresses/:addressId', function () {
         expect(result.status).toBe(404);
     });
 });
+
+describe('PUT /api/contacts/:contactId/addresses/:addressId', function () {
+    beforeEach(async () => {
+        await createTestUser();
+        await createTestContact();
+        await createTestAddress();
+    });
+    
+    afterEach(async () => {
+        await removeAllTestAddresses();
+        await removeAllTestContacts();
+        await removeTestUser();
+    });
+
+    it('should can update address', async () => {
+        const testContact = await getTestContact();
+        const testAddress = await getTestAddress();
+        const result = await supertest(web)
+            .put(`/api/contacts/${testContact.id}/addresses/${testAddress.id}`)
+            .set("Authorization", "test")
+            .send({
+                street: "jalan test lagi",
+                city: "kota test lagi",
+                province: "provinsi test lagi",
+                country: "inggris",
+                postal_code: "222222"
+            });
+        
+        expect(result.status).toBe(200);
+        expect(result.body.data.id).toBeDefined();
+        expect(result.body.data.street).toBe("jalan test lagi");
+        expect(result.body.data.city).toBe("kota test lagi");
+        expect(result.body.data.province).toBe("provinsi test lagi");
+        expect(result.body.data.country).toBe("inggris");
+        expect(result.body.data.postal_code).toBe("222222");
+    });
+    
+    it('should reject if request is not valid', async () => {
+        const testContact = await getTestContact();
+        const testAddress = await getTestAddress();
+        const result = await supertest(web)
+            .put(`/api/contacts/${testContact.id}/addresses/${testAddress.id}`)
+            .set("Authorization", "test")
+            .send({
+                street: "jalan test lagi",
+                city: "kota test lagi",
+                province: "provinsi test lagi",
+                country: "",
+                postal_code: ""
+            });
+        
+        expect(result.status).toBe(400);
+    });
+    
+    it('should reject if address is not found', async () => {
+        const testContact = await getTestContact();
+        const testAddress = await getTestAddress();
+        const result = await supertest(web)
+            .put(`/api/contacts/${testContact.id}/addresses/${(testAddress.id + 1)}`)
+            .set("Authorization", "test")
+            .send({
+                street: "jalan test lagi",
+                city: "kota test lagi",
+                province: "provinsi test lagi",
+                country: "inggris",
+                postal_code: "234234"
+            });
+        
+        expect(result.status).toBe(404);
+    });
+    
+    it('should reject if contact is not found', async () => {
+        const testContact = await getTestContact();
+        const testAddress = await getTestAddress();
+        const result = await supertest(web)
+            .put(`/api/contacts/${testContact.id+1}/addresses/${testAddress.id}`)
+            .set("Authorization", "test")
+            .send({
+                street: "jalan test lagi",
+                city: "kota test lagi",
+                province: "provinsi test lagi",
+                country: "inggris",
+                postal_code: "234234"
+            });
+        
+        expect(result.status).toBe(404);
+    });
+});
