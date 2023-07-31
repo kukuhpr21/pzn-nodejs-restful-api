@@ -1,0 +1,146 @@
+POST http://localhost:3000/api/users
+Content-type: application/json
+Accept: application/json
+
+{
+    "username": "Kukuh",
+    "password": "rahasia",
+    "name": "Kukuh Prakoso"
+}
+
+### token 00804d44-a1b5-46f1-b83a-38da6bb8b2cb
+
+POST http://localhost:3000/api/users/login
+Content-type: application/json
+Accept: application/json
+
+{
+    "username": "Kukuh",
+    "password": "rahasia"
+}
+
+###
+
+GET http://localhost:3000/api/users/current
+Content-type: application/json
+Accept: application/json
+Authorization: 00804d44-a1b5-46f1-b83a-38da6bb8b2cb
+
+###
+
+PATCH  http://localhost:3000/api/users/current
+Content-type: application/json
+Accept: application/json
+Authorization: 00804d44-a1b5-46f1-b83a-38da6bb8b2cb
+
+{
+    "name": "Kukuh Prakoso Delpiero",
+    "password": "rahasia"
+}
+
+###
+
+DELETE http://localhost:3000/api/users/logout
+Content-type: application/json
+Accept: application/json
+Authorization: 00804d44-a1b5-46f1-b83a-38da6bb8b2cb
+
+###
+
+POST http://localhost:3000/api/contacts
+Content-type: application/json
+Accept: application/json
+Authorization: 00804d44-a1b5-46f1-b83a-38da6bb8b2cb
+
+{
+    "first_name": "Ronal",
+    "last_name": "Fagundes",
+    "email": "rofa@gmail.com",
+    "phone": "08237575"
+}
+
+###
+
+GET http://localhost:3000/api/contacts
+Content-type: application/json
+Accept: application/json
+Authorization: 00804d44-a1b5-46f1-b83a-38da6bb8b2cb
+
+###
+
+GET http://localhost:3000/api/contacts/4715
+Content-type: application/json
+Accept: application/json
+Authorization: 00804d44-a1b5-46f1-b83a-38da6bb8b2cb
+
+###
+
+PUT http://localhost:3000/api/contacts/4715
+Content-type: application/json
+Accept: application/json
+Authorization: 00804d44-a1b5-46f1-b83a-38da6bb8b2cb
+
+{
+    "first_name": "Dodo",
+    "last_name": "Siu",
+    "email": "rofa@gmail.com",
+    "phone": "08237575"
+}
+
+###
+
+DELETE http://localhost:3000/api/contacts/4715
+Content-type: application/json
+Accept: application/json
+Authorization: 00804d44-a1b5-46f1-b83a-38da6bb8b2cb
+
+###
+
+POST http://localhost:3000/api/contacts/4716/addresses
+Content-type: application/json
+Accept: application/json
+Authorization: 00804d44-a1b5-46f1-b83a-38da6bb8b2cb
+
+{
+    "street": "Kantor",
+    "city": "jakarta",
+    "province": "jakarta",
+    "country": "indonesia",
+    "postal_code": "234235"
+}
+
+###
+
+GET http://localhost:3000/api/contacts/4716/addresses
+Content-type: application/json
+Accept: application/json
+Authorization: 00804d44-a1b5-46f1-b83a-38da6bb8b2cb
+
+###
+
+GET http://localhost:3000/api/contacts/4716/addresses/353
+Content-type: application/json
+Accept: application/json
+Authorization: 00804d44-a1b5-46f1-b83a-38da6bb8b2cb
+
+###
+
+put http://localhost:3000/api/contacts/4716/addresses/353
+Content-type: application/json
+Accept: application/json
+Authorization: 00804d44-a1b5-46f1-b83a-38da6bb8b2cb
+
+{
+    "street": "Kantor Bekerja",
+    "city": "bekasi",
+    "province": "jawa barat",
+    "country": "indonesia",
+    "postal_code": "234235"
+}
+
+###
+
+DELETE  http://localhost:3000/api/contacts/4716/addresses/353
+Content-type: application/json
+Accept: application/json
+Authorization: 00804d44-a1b5-46f1-b83a-38da6bb8b2cb
