@@ -1,6 +1,7 @@
 import supertest from "supertest";
 import { web } from "../src/application/web.js";
-import { removeAllTestAddresses } from "./test-util.js";
+import { createTestContact, createTestUser, getTestContact, removeAllTestAddresses, removeAllTestContacts, removeTestUser } from "./test-util.js";
+import { logger } from "../src/application/logging.js";
 
 describe('POST /api/contacts/:contactId/addresses', function () {
     beforeEach(async () => {
@@ -14,7 +15,58 @@ describe('POST /api/contacts/:contactId/addresses', function () {
         await removeTestUser();
     });
 
-    it ('should can delete contact', async () => {
+    it('should can create new address', async () => {
+        const testContact = await getTestContact();
+        const result = await supertest(web)
+            .post(`/api/contacts/${testContact.id}/addresses`)
+            .set("Authorization", "test")
+            .send({
+                street: "jalan test",
+                city: "kota test",
+                province: "provinsi test",
+                country: "indonesia",
+                postal_code: "243243"
+            });
         
+        expect(result.status).toBe(200);
+        expect(result.body.data.id).toBeDefined();
+        expect(result.body.data.street).toBe("jalan test");
+        expect(result.body.data.city).toBe("kota test");
+        expect(result.body.data.province).toBe("provinsi test");
+        expect(result.body.data.country).toBe("indonesia");
+        expect(result.body.data.postal_code).toBe("243243");
+        
+    });
+    
+    it('should if address if request is invalid', async () => {
+        const testContact = await getTestContact();
+        const result = await supertest(web)
+            .post(`/api/contacts/${testContact.id}/addresses`)
+            .set("Authorization", "test")
+            .send({
+                street: "jalan test",
+                city: "kota test",
+                province: "provinsi test",
+                country: "",
+                postal_code: ""
+            });
+        
+        expect(result.status).toBe(400);
+    });
+    
+    it('should if address if contact is not found', async () => {
+        const testContact = await getTestContact();
+        const result = await supertest(web)
+            .post(`/api/contacts/${(testContact.id + 1)}/addresses`)
+            .set("Authorization", "test")
+            .send({
+                street: "jalan test",
+                city: "kota test",
+                province: "provinsi test",
+                country: "",
+                postal_code: ""
+            });
+        
+        expect(result.status).toBe(404);
     });
 });
